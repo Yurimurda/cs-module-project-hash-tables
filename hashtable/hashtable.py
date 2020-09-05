@@ -22,6 +22,12 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
+        if capacity < MIN_CAPACITY:
+            self.capacity = MIN_CAPACITY
+        else:
+            self.capacity = capacity
+
+        self.buckets = [None] * self.capacity
 
 
     def get_num_slots(self):
@@ -55,6 +61,21 @@ class HashTable:
 
         # Your code here
 
+        FNV_offset_basis = 14695981039346656037
+        FNV_prime = 1099511628211
+
+        hashed_result = FNV_offset_basis
+        key_bytes = key.encode()
+
+
+        for byte in key_bytes:
+
+            hashed_result = hashed_result * FNV_prime
+
+            hashed_result = hashed_result ^ byte
+
+        return hashed_result
+
 
     def djb2(self, key):
         """
@@ -71,7 +92,7 @@ class HashTable:
         between within the storage capacity of the hash table.
         """
         #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        return self.fnv1(key) % self.capacity
 
     def put(self, key, value):
         """
@@ -82,6 +103,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        idx = self.hash_index(key)
+
+        self.buckets[idx] = value
 
 
     def delete(self, key):
@@ -94,6 +118,10 @@ class HashTable:
         """
         # Your code here
 
+        idx = self.hash_index(key)
+
+        self.buckets[idx] = None
+
 
     def get(self, key):
         """
@@ -104,6 +132,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        idx = self.hash_index(key)
+        
+        value = self.buckets[idx]
+
+        return value
 
 
     def resize(self, new_capacity):
