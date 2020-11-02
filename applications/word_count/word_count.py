@@ -1,5 +1,7 @@
 def word_count(s):
     # Your code here
+    lowerCase = dict((k.lower(), v) for k , v in s .items())
+    
 
 
 

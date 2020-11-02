@@ -27,7 +27,7 @@ class HashTable:
         else:
             self.capacity = capacity
 
-        self.buckets = [None] * self.capacity
+        self.buckets = [[] for i in range(self.capacity)]  
 
 
     def get_num_slots(self):
@@ -41,6 +41,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
+
+        return len(self.buckets)
 
 
     def get_load_factor(self):
@@ -104,8 +106,14 @@ class HashTable:
         """
         # Your code here
         idx = self.hash_index(key)
-
-        self.buckets[idx] = value
+        found = False
+        for b, element in enumerate(self.buckets[idx]):
+            if len(element) == 2 and element [0] == key:
+                self.buckets[idx][b] = (key, value)
+                found = True
+                break
+            if not found:
+                self.buckets[idx].append((key, value))
 
 
     def delete(self, key):
@@ -120,7 +128,10 @@ class HashTable:
 
         idx = self.hash_index(key)
 
-        self.buckets[idx] = None
+        for index, element in enumerate(self.buckets[idx]):
+            if element[0] == key:
+                del self.buckets[idx][index]
+        # self.buckets[idx] = None
 
 
     def get(self, key):
@@ -133,10 +144,12 @@ class HashTable:
         """
         # Your code here
         idx = self.hash_index(key)
-        
-        value = self.buckets[idx]
 
-        return value
+        for element in self.buckets[idx]:
+            if element[0] == key:
+                return element[1]
+
+
 
 
     def resize(self, new_capacity):
